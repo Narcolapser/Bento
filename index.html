@@ -1,0 +1,21 @@
+<html>
+	<h1>Bento!</h1>
+	<label for="editor">Editor</label>
+	<br/>
+	<textarea id="editor" name="editor" rows="10" cols="50"></textarea>
+	<br/>
+	<button onclick="postData()">Save</button>
+<script>
+	async function postData()
+	{
+		console.log('Posting diff');
+		const response = await fetch('http://localhost:8000', {
+			method: 'POST',
+			mode: 'cors',
+			headers: {'Content-Type': 'application/json'},
+			body: JSON.stringify({"diff":"Content"})
+		});
+		return response.json();
+	}
+</script>
+</html>
