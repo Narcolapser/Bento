@@ -6,16 +6,41 @@
 	<br/>
 	<button onclick="postData()">Save</button>
 <script>
+	let old = "";
+	let hash = "";
+	let docid = Math.floor(Math.random()*1000000);
+	
+	function hashCode(str) {
+		return str.split('').reduce((prevHash, currVal) =>
+			(((prevHash << 5) - prevHash) + currVal.charCodeAt(0))|0, 0);
+	}
+	
 	async function postData()
 	{
-		console.log('Posting diff');
-		const response = await fetch('http://localhost:8000', {
-			method: 'POST',
-			mode: 'cors',
-			headers: {'Content-Type': 'application/json'},
-			body: JSON.stringify({"diff":"Content"})
-		});
-		return response.json();
+		let text = document.getElementById('editor').value;
+		if (text != old)
+		{
+			console.log('Posting diff');
+			let diff = {
+				'time':new Date().getTime(),
+				'diff':text,
+				'author':'toben',
+				'DocID':docid,
+				'parent':hash
+			}
+			hash = hashCode(JSON.stringify(diff));
+			diff['hash'] = hash;
+			const response = await fetch('http://localhost:5000/doc/' + docid, {
+				method: 'POST',
+				mode: 'cors',
+				headers: {'Content-Type': 'application/json'},
+				body: JSON.stringify(diff)
+			});
+			
+			old = text;
+			console.log(response);
+			return response;
+		}
 	}
 </script>
 </html>

@@ -1,27 +1,44 @@
-from http.server import HTTPServer, BaseHTTPRequestHandler
+from flask import Flask, request
+import json
+import sqlite3
 
-from io import BytesIO
+app = Flask(__name__)
 
-class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
+db = sqlite3.connect('docs.sql')
+cur = db.cursor()
+cur.execute("""CREATE TABLE IF NOT EXISTS Docs (DocID int PRIMARY KEY,Name text)""")
+cur.execute("""CREATE TABLE IF NOT EXISTS Diffs (
+					DiffHash int PRIMARY KEY, 
+					DocID int, 
+					Parent text, 
+					Diff text, 
+					Author text, 
+					Time int)""")
+#					FOREIGN KEY(DocID) REFERENCES Docs(DocID))""")
+db.commit()
+cur.close()
 
-    def do_GET(self):
-        self.send_response(200)
-        self.end_headers()
-        index = open('index.html').read()
-        self.wfile.write(index.encode('utf-8'))
+diff_insert = "INSERT INTO Diffs Values({hash},{DocID},{parent},{diff},{author},{time})"
+diff_insert = "INSERT INTO Diffs Values ({},{},'{}','{}','{}',{})"
 
-    def do_POST(self):
-        content_length = int(self.headers['Content-Length'])
-        body = self.rfile.read(content_length)
-        print(body)
-        self.send_response(200)
-        self.end_headers()
-        self.wfile.write(b'{"status":"success"}')
+@app.route("/")
+def home():
+	return open('index.html').read()
+	
+@app.route("/doc/<docid>", methods = ['GET', 'POST'])
+def post_dif(docid):
+	db = sqlite3.connect('docs.sql')
+	cur = db.cursor()
+	print(docid)
+	data = json.loads(request.data.decode('utf-8'))
+	print(data)
+	insert = diff_insert.format(data['hash'], data['DocID'], data['parent'], data['diff'], data['author'], data['time'])
+	print(insert)
+	cur.execute(insert)
+	db.commit()
+	cur.close()
+	db.close()
+	return '{"status":"success"}'
 
-try:
-    httpd = HTTPServer(('localhost', 8000), SimpleHTTPRequestHandler)
-    print('ready')
-    httpd.serve_forever()
-except KeyboardInterrupt:
-    print('escaped')
-
+if __name__ == "__main__":
+	app.run(debug=True)
