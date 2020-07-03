@@ -7,8 +7,8 @@
 	<button onclick="postData()">Save</button>
 <script>
 	let old = "";
-	let hash = "";
-	let docid = Math.floor(Math.random()*1000000);
+	let hash = {{parent}};
+	let docid = {{doc_id}};
 	
 	function hashCode(str) {
 		return str.split('').reduce((prevHash, currVal) =>
@@ -30,7 +30,7 @@
 			}
 			hash = hashCode(JSON.stringify(diff));
 			diff['hash'] = hash;
-			const response = await fetch('http://localhost:5000/doc/' + docid, {
+			const response = await fetch('http://localhost:5000/api/diff/' + docid, {
 				method: 'POST',
 				mode: 'cors',
 				headers: {'Content-Type': 'application/json'},
