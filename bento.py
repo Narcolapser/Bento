@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template
+from flask import Flask, request, render_template, jsonify
 import json
 import sqlite3
 import random
@@ -22,7 +22,7 @@ cur.close()
 
 doc_insert = "INSERT INTO Docs(DocID, Name, Path, Type) VALUES(?,?,?,?)"
 doc_select_all = "SELECT * FROM Docs"
-doc_select = "SELECT * FROM Docs WHERE DocID=? ORDER BY Time DESC LIMIT 1"
+doc_select = "SELECT * FROM Docs WHERE DocID=?"
 
 diff_insert = "INSERT INTO Diffs Values({hash},{DocID},{parent},{diff},{author},{time})"
 diff_insert = "INSERT INTO Diffs Values ({},{},'{}','{}','{}',{})"
@@ -45,9 +45,11 @@ def show_doc(docid):
 	cur = db.cursor()
 	cur.execute(diff_select,(docid,))
 	diff = cur.fetchall()
+	cur.execute(doc_select,(docid,))
+	doc = cur.fetchall()
 	cur.close()
 	db.close()
-	return render_template('doc.html', doc_id = docid, parent=diff[0][0])
+	return render_template('doc.html', doc_id = docid, parent=diff[0][0], content=diff[0][3], title=doc[0][1])
 	
 @app.route("/api/doc/", methods=['POST'])
 def new_doc():
@@ -68,7 +70,7 @@ def new_doc():
 	db.commit()
 	cur.close()
 	db.close()
-	return json.dumps({"docid":docid, "name":name, "path":path, "type":doc_type})
+	return jsonify({"docid":docid, "name":name, "path":path, "type":doc_type})
 
 @app.route("/api/diff/<docid>", methods = ['POST'])
 def post_diff(docid):
@@ -82,7 +84,7 @@ def post_diff(docid):
 	db.commit()
 	cur.close()
 	db.close()
-	return '{"status":"success"}'
+	return jsonify({"status":"success"})
 
 @app.route("/api/diff/<docid>", methods = ['GET'])
 def get_doc(docid):

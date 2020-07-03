@@ -1,10 +1,12 @@
 <html>
 	<h1>Bento!</h1>
+	<h2>{{title}}</h2>
 	<label for="editor">Editor</label>
 	<br/>
-	<textarea id="editor" name="editor" rows="10" cols="50"></textarea>
+	<textarea id="editor" name="editor" rows="10" cols="50">{{content}}</textarea>
 	<br/>
-	<button onclick="postData()">Save</button>
+	<!--<button onclick="postData()">Save</button>-->
+	<a href="/">Back</a>
 <script>
 	let old = "";
 	let hash = {{parent}};
@@ -42,5 +44,6 @@
 			return response;
 		}
 	}
+	setInterval(postData, 1000);
 </script>
 </html>

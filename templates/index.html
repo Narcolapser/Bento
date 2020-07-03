@@ -1,6 +1,5 @@
 <html>
 	<h1>Bento!</h1>
-	<label for="editor">Editor</label>
 	<button  onclick="new_doc()">New</button>
 	<select id="doc_list">
 		{% for doc in docs %}
@@ -17,8 +16,15 @@
 			method: 'POST',
 			mode: 'cors',
 			headers: {'Content-Type': 'application/json'},
-			body: JSON.stringify({name:name, author:'Toben'})});
-		console.log(response);
+			body: JSON.stringify({name:name, author:'Toben'})})
+			.then(function(resp) {
+				return resp.json();
+			}).then(function(data) {
+				let url = '/doc/' + data['docid'];
+				console.log(url);
+				window.location = url;
+			});
+		
 	}
 	
 	function load_doc()
