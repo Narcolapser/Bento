@@ -3,7 +3,7 @@
 	<button  onclick="new_doc()">New</button>
 	<select id="doc_list">
 		{% for doc in docs %}
-			<option value="{{doc[0]}}">{{doc[1]}}</option>
+			<option value="{{doc['id']}}">{{doc['name']}}</option>
 		{% endfor %}
 	</select>
 	<button onclick="load_doc()">Load</button>
@@ -16,7 +16,7 @@
 			method: 'POST',
 			mode: 'cors',
 			headers: {'Content-Type': 'application/json'},
-			body: JSON.stringify({name:name, author:'Toben'})})
+			body: JSON.stringify({name:name, author:'Toben', path:'/'})})
 			.then(function(resp) {
 				return resp.json();
 			}).then(function(data) {

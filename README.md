@@ -17,3 +17,26 @@ Priorities:
 1. Runs on Web and Mobile
 2. Stable. My wife will be using this so I want it to not be down all the time (unlike plex...)
 3. Light. This will be running on a Raspberry Pi. It should be very light so as to fit inside such an environment easily.
+4. Scriptable. I want to connect automations to this so it needs to be scriptable via REST api.
+
+Road Map:
+0.1
+* Plain text editor
+* Autosaving every couple of seconds
+* Saving to a database
+* Loading
+* File selector to open files from
+
+0.2 
+* Saving diffs instead of entire documents
+* File explorer
+* Rich text editor
+* 
+
+0.3
+* New document type: List Editor
+
+0.4 
+* Android App
+
+

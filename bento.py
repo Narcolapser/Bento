@@ -3,78 +3,53 @@ import json
 import sqlite3
 import random
 import time
+import os
+import model
+from model import Folder, Document, Diff
 
 app = Flask(__name__)
 
-db = sqlite3.connect('docs.sql')
-cur = db.cursor()
-cur.execute("""CREATE TABLE IF NOT EXISTS Docs (DocID int PRIMARY KEY,Name text, Path text, Type text)""")
-cur.execute("""CREATE TABLE IF NOT EXISTS Diffs (
-					DiffHash int PRIMARY KEY, 
-					DocID int, 
-					Parent text, 
-					Diff text, 
-					Author text, 
-					Time int)""")
-#					FOREIGN KEY(DocID) REFERENCES Docs(DocID))""")
-db.commit()
-cur.close()
-
-doc_insert = "INSERT INTO Docs(DocID, Name, Path, Type) VALUES(?,?,?,?)"
-doc_select_all = "SELECT * FROM Docs"
-doc_select = "SELECT * FROM Docs WHERE DocID=?"
-
-diff_insert = "INSERT INTO Diffs Values({hash},{DocID},{parent},{diff},{author},{time})"
-diff_insert = "INSERT INTO Diffs Values ({},{},'{}','{}','{}',{})"
-diff_insert = "INSERT INTO Diffs(DiffHash, DocID, Parent, Diff, Author, Time) VALUES(?,?,?,?,?,?)"
-diff_select = "SELECT * FROM Diffs WHERE DocID=? ORDER BY Time DESC LIMIT 1"
-
 @app.route("/")
 def home():
-	db = sqlite3.connect('docs.sql')
-	cur = db.cursor()
-	cur.execute(doc_select_all)
-	docs = cur.fetchall()
-	cur.close()
-	db.close()
+	docs = model.get_documents()
+	print('documents: {}'.format(docs))
 	return render_template('index.html', docs=docs)
 
-@app.route("/doc/<docid>")
-def show_doc(docid):
-	db = sqlite3.connect('docs.sql')
-	cur = db.cursor()
-	cur.execute(diff_select,(docid,))
-	diff = cur.fetchall()
-	cur.execute(doc_select,(docid,))
-	doc = cur.fetchall()
-	cur.close()
-	db.close()
-	return render_template('doc.html', doc_id = docid, parent=diff[0][0], content=diff[0][3], title=doc[0][1])
+@app.route("/doc/<doc_id>")
+def show_doc(doc_id):
+	doc = model.get_document(doc_id)
+	diff = model.get_head_diff(doc_id)
+	
+	return render_template('doc.html', doc_id = docid, parent=diff['parent'],
+				content=diff['content'], title=doc['title'])
 	
 @app.route("/api/doc/", methods=['POST'])
 def new_doc():
 	# Create the document.
 	data = json.loads(request.data.decode('utf-8'))
-	name = data['name']
-	docid = random.randint(0,65536)
-	doc_type = 'text'
-	path = '/'
-	db = sqlite3.connect('docs.sql')
-	cur = db.cursor()
-	cur.execute(doc_insert,(docid, name, path, doc_type))
+	print(data)
+	doc = Document()
+	doc.name = data['name']
+	doc.doc_type = 'text'
+	doc.path = model.get_folder_id(data['path'])
 	
-	# And create it's initial diff
-	diff = (random.randint(0,65536),docid,None,'',data['author'],time.time())
-	cur.execute(diff_insert,diff)
+	doc = model.save_document(doc)
 	
-	db.commit()
-	cur.close()
-	db.close()
-	return jsonify({"docid":docid, "name":name, "path":path, "type":doc_type})
+	diff = Diff()
+	diff.diff_hash = random.randint(0,2147483648)
+	diff.document = doc.id
+	diff.parent = None
+	diff.author = data['author']
+	diff.time = time.time()
+	diff.content = ''
+	
+	model.save_diff(diff)
+	print(doc.dict())
+	return jsonify(doc.dict())
 
 @app.route("/api/diff/<docid>", methods = ['POST'])
 def post_diff(docid):
-	db = sqlite3.connect('docs.sql')
+	db = sqlite3.connect(db_name)
 	cur = db.cursor()
 	print(docid)
 	data = json.loads(request.data.decode('utf-8'))
@@ -88,7 +63,7 @@ def post_diff(docid):
 
 @app.route("/api/diff/<docid>", methods = ['GET'])
 def get_doc(docid):
-	db = sqlite3.connect('docs.sql')
+	db = sqlite3.connect(db_name)
 	cur = db.cursor()
 	print(docid)
 	cur.execute(diff_select.format(docid))
