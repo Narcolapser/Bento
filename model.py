@@ -40,6 +40,7 @@ def get_document(doc_id):
 def save_document(document):
 	session = SqlSession()
 	session.add(document)
+	session.flush()
 	session.commit()
 	return document
 

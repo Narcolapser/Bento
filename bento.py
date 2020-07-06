@@ -19,9 +19,15 @@ def home():
 def show_doc(doc_id):
 	doc = model.get_document(doc_id)
 	diff = model.get_head_diff(doc_id)
+	print(doc)
+	if 'parent' not in diff:
+		diff['parent'] = 0
 	
-	return render_template('doc.html', doc_id = docid, parent=diff['parent'],
-				content=diff['content'], title=doc['title'])
+	if 'content' not in diff:
+		diff['content'] = ''
+	
+	return render_template('doc.html', doc_id = doc_id, parent=diff['parent'],
+				content=diff['content'], title=doc['name'])
 	
 @app.route("/api/doc/", methods=['POST'])
 def new_doc():
@@ -44,7 +50,7 @@ def new_doc():
 	diff.content = ''
 	
 	model.save_diff(diff)
-	print(doc.dict())
+	print('Returning dictionary: {}'.format(doc.dict()))
 	return jsonify(doc.dict())
 
 @app.route("/api/diff/<docid>", methods = ['POST'])

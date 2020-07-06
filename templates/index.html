@@ -18,9 +18,12 @@
 			headers: {'Content-Type': 'application/json'},
 			body: JSON.stringify({name:name, author:'Toben', path:'/'})})
 			.then(function(resp) {
+				console.log('resp: ');
+				console.log(resp);
 				return resp.json();
 			}).then(function(data) {
-				let url = '/doc/' + data['docid'];
+				console.log(data);
+				let url = '/doc/' + data['id'];
 				console.log(url);
 				window.location = url;
 			});
