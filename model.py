@@ -100,10 +100,11 @@ class Diff(Base):
 	
 	diff_hash = Column(Integer, primary_key=True)
 	document = Column(Integer, ForeignKey('docs.id'))
-	parent = None #Column(Integer, ForeignKey('diffs.diff_hash'))
+	parent = Column(Integer, ForeignKey('diffs.diff_hash'))
 	
 	author = Column(String)
 	time = Column(Integer)
+	content = Column(String)
 	
 	def __repr__(self):
 		return 'Diff( id: {}, document: {})'.format(self.diff_hash, self.document)

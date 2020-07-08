@@ -32,7 +32,7 @@
 			}
 			hash = hashCode(JSON.stringify(diff));
 			diff['hash'] = hash;
-			const response = await fetch('http://localhost:5000/api/diff/' + docid, {
+			const response = await fetch('/api/diff/' + docid, {
 				method: 'POST',
 				mode: 'cors',
 				headers: {'Content-Type': 'application/json'},

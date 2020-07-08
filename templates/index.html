@@ -12,7 +12,7 @@
 	{
 		let name = prompt("Name of new document: ","Untitled");
 		console.log(name);
-		const response = await fetch('http://localhost:5000/api/doc/', {
+		const response = await fetch('/api/doc/', {
 			method: 'POST',
 			mode: 'cors',
 			headers: {'Content-Type': 'application/json'},

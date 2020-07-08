@@ -20,11 +20,8 @@ def show_doc(doc_id):
 	doc = model.get_document(doc_id)
 	diff = model.get_head_diff(doc_id)
 	print(doc)
-	if 'parent' not in diff:
+	if not diff['parent']:
 		diff['parent'] = 0
-	
-	if 'content' not in diff:
-		diff['content'] = ''
 	
 	return render_template('doc.html', doc_id = doc_id, parent=diff['parent'],
 				content=diff['content'], title=doc['name'])
