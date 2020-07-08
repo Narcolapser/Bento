@@ -24,7 +24,7 @@ def show_doc(doc_id):
 		diff['parent'] = 0
 	
 	return render_template('doc.html', doc_id = doc_id, parent=diff['parent'],
-				content=diff['content'], title=doc['name'])
+				content=doc.head, title=doc.name)
 	
 @app.route("/api/doc/", methods=['POST'])
 def new_doc():
@@ -50,18 +50,22 @@ def new_doc():
 	print('Returning dictionary: {}'.format(doc.dict()))
 	return jsonify(doc.dict())
 
-@app.route("/api/diff/<docid>", methods = ['POST'])
-def post_diff(docid):
-	db = sqlite3.connect(db_name)
-	cur = db.cursor()
-	print(docid)
+@app.route("/api/diff/<doc_id>", methods = ['POST'])
+def post_diff(doc_id):
 	data = json.loads(request.data.decode('utf-8'))
-	print(data)
-	insert_values = (data['hash'], data['DocID'], data['parent'], data['diff'], data['author'], data['time'])
-	cur.execute(diff_insert, insert_values)
-	db.commit()
-	cur.close()
-	db.close()
+	diff = Diff()
+	diff.diff_hash = data['hash']
+	diff.document  = data['document']
+	diff.parent    = data['parent']
+	diff.content   = data['content']
+	diff.author    = data['author']
+	diff.time      = data['time']
+	model.save_diff(diff)
+	
+	doc = model.get_document(doc_id)
+	doc.head = data['content']
+	model.save_document(doc)
+
 	return jsonify({"status":"success"})
 
 @app.route("/api/diff/<docid>", methods = ['GET'])

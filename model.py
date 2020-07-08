@@ -35,13 +35,14 @@ def get_documents():
 def get_document(doc_id):
 	session = SqlSession()
 	query = session.query(Document).filter(Document.id==doc_id)
-	return query[0].dict()
+	return query[0]
 
 def save_document(document):
 	session = SqlSession()
-	session.add(document)
-	session.flush()
-	session.commit()
+	cur_session = session.object_session(document)
+	cur_session.add(document)
+	cur_session.flush()
+	cur_session.commit()
 	return document
 
 def get_folder_id(path):
@@ -87,12 +88,14 @@ class Document(Base):
 	name = Column(String)
 	doc_type = Column(String)
 	folder = Column(Integer, ForeignKey('folders.id'))
+	# The current state of the document:
 	head = Column(String)
 	
 	diffs = relationship("Diff")
 	
 	def __repr__(self):
-		return 'Doc( id: {} path: {} type: {})'.format(self.id, self.folder.path + self.name, self.doc_type)
+		path = '/'
+		return 'Doc( id: {} path: {} type: {})'.format(self.id, path + self.name, self.doc_type)
 
 
 class Diff(Base):

@@ -25,9 +25,9 @@
 			console.log('Posting diff');
 			let diff = {
 				'time':new Date().getTime(),
-				'diff':text,
+				'content':text,
 				'author':'toben',
-				'DocID':docid,
+				'document':docid,
 				'parent':hash
 			}
 			hash = hashCode(JSON.stringify(diff));
