@@ -40,9 +40,11 @@ def get_document(doc_id):
 def save_document(document):
 	session = SqlSession()
 	cur_session = session.object_session(document)
-	cur_session.add(document)
-	cur_session.flush()
-	cur_session.commit()
+	if cur_session:
+		session = cur_session
+	session.add(document)
+	session.flush()
+	session.commit()
 	return document
 
 def get_folder_id(path):
