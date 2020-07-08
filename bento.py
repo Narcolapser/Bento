@@ -13,7 +13,7 @@ app = Flask(__name__)
 def home():
 	docs = model.get_documents()
 	print('documents: {}'.format(docs))
-	return render_template('index.html', docs=docs)
+	return render_template('index.html', docs=docs, flask_token="Hello world")
 
 @app.route("/doc/<doc_id>")
 def show_doc(doc_id):
