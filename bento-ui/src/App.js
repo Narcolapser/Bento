@@ -24,6 +24,7 @@ function App() {
 			<textarea id="editor" name="editor" rows="10" cols="50"></textarea>
 			<button onClick={postData}>Save</button>
 			<br/>
+			<p>My Token = {window.token}</p>
 		</div>
 	);
 }
