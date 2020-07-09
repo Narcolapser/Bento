@@ -47,10 +47,22 @@ def save_document(document):
 	session.commit()
 	return document
 
-def get_folder_id(path):
+def get_folder_from_path(path):
 	session = SqlSession()
 	query = session.query(Folder).filter(Folder.path==path)
-	return query[0]
+	if query.count():
+		return query[0]
+	else:
+		return None
+
+def get_folder_children(folder):
+	session = SqlSession()
+	#folder = session.query(Folder).filter(Folder.id==folder_id)[0]
+	folders = [f.dict() for f in session.query(Folder).\
+								filter(Folder.path.like('{}%'.format(folder.path))).\
+								filter(Folder.id != folder.id)]
+	docs = [doc.dict() for doc in session.query(Document).filter(Document.folder==folder.id)]
+	return (folders,docs)
 
 def save_diff(diff):
 	session = SqlSession()

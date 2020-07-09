@@ -25,7 +25,21 @@ def show_doc(doc_id):
 	
 	return render_template('doc.html', doc_id = doc_id, parent=diff['parent'],
 				content=doc.head, title=doc.name)
+
+@app.route("/api/path/", defaults={'path': '/'})
+@app.route("/api/path/<path:path>")
+def get_directory(path):
+	try:
+		folder = model.get_folder_from_path(path)
+		if not folder:
+			return jsonify({'result':'failure','reason':'path does not exist.'})
+	except Exception as e:
+		return jsonify({'result':'failure','reason':'path does not exist.','error':str(e)})
+	folders, docs = model.get_folder_children(folder)
+	print(folders,docs)
 	
+	return jsonify({'folders':folders,'documents':docs})
+
 @app.route("/api/doc/", methods=['POST'])
 def new_doc():
 	# Create the document.
@@ -34,7 +48,7 @@ def new_doc():
 	doc = Document()
 	doc.name = data['name']
 	doc.doc_type = 'text'
-	doc.path = model.get_folder_id(data['path'])
+	doc.path = model.get_folder_from_path(data['path'])
 	
 	doc = model.save_document(doc)
 	
