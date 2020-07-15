@@ -1,19 +1,10 @@
 import React from 'react';
 import logo from './logo.svg';
 import './App.css';
+import { Directory } from './Directory.js';
+import { Editor } from './Editor.js';
 
-let postData = async () => 
-{
-	console.log('Posting diff');
-	const response = await fetch('http://localhost:5000/doc1', {
-		method: 'POST',
-		mode: 'no-cors',
-		headers: {'Content-Type': 'application/json'},
-		body: JSON.stringify({"diff":"Content"})
-	});
-	console.log(response);
-	return response;
-}
+
 
 async function new_doc() 
 { 
@@ -46,12 +37,15 @@ function load_doc()
 }
 
 function App() {
+	let disp = '';
+	if (window.bento_type == 'folder')
+		disp = (<Directory folder={window.bento_id} name={window.bento_name}></Directory>)
+	else
+		disp = (<Editor document={window.bento_id} name={window.bento_name}></Editor>)
 	return (
 		<div className="App">
 		<h1>Bento!</h1> 
-		<button  onclick="new_doc()">New</button> 
-		<button onclick="load_doc()">Load</button>
-		
+		{ disp }
 		</div>
 	);
 }

@@ -1,0 +1,104 @@
+{
+    "description": "Simple cloud documents in your private cloud.",
+    "name": "Bento",
+    "path": "/home/toben/Code/ssg/benot",
+    "posts": [
+        {
+            "author": "Toben Archer",
+            "branch": "master",
+            "date": "2020-07-08",
+            "message": "I was wondering why my editor got switched to nano. My terminal window was open on Midgard, my webserver. woops. ",
+            "project": "bento",
+            "title": "I was totally on the wrong machine."
+        },
+        {
+            "author": "Toben Archer",
+            "branch": "master",
+            "date": "2020-07-08",
+            "message": "I vascilated on this a lot. Setting up Bento with react means that people may have to setup NPM on their machine to get Bento to work. That meakes this project a little less approachable. But I think if I play my cards right I can still keep it easy to setup Bento.\n\nBut there were two things that finally convinced me: 1. The UI is still seperated from the Backend. This means that the idea of building apps and scripting interfaces is not harmed by using React to do the default web-based interface. 2. One of my primary objectives is minimal effort on my part. That objective ranks higher than ease of adoption, at least at this point. So I want to simply say \"npm install jsdiff\" to get my differencing engine working for example, not trying to hack it into place.\n\nSo React is in. Next time I'm on I'll hopefully get diffs working and then I can move on to the creature comforts like a decent file browser. ",
+            "project": "bento",
+            "title": "Setting up react."
+        },
+        {
+            "author": "Toben Archer",
+            "branch": "master",
+            "date": "2020-07-07",
+            "message": "Preparing to eject npm.",
+            "project": "bento",
+            "title": "Preparing to eject npm."
+        },
+        {
+            "author": "Toben Archer",
+            "branch": "master",
+            "date": "2020-07-07",
+            "message": "I'm trying to get this to run on my home server. One of the driving forces for me to work on this project is I want to use it. ",
+            "project": "bento",
+            "title": "Quick tweak."
+        },
+        {
+            "author": "Toben Archer",
+            "branch": "master",
+            "date": "2020-07-07",
+            "message": "Before I press on to diffs I wanted to make sure that everything was working. it wasn't. I've fixed things so they are working now. So now I can finally press on to diffing. ",
+            "project": "bento",
+            "title": "Actually working this time."
+        },
+        {
+            "author": "Toben Archer",
+            "branch": "master",
+            "date": "2020-07-07",
+            "message": "Diffs didn't have content in the model for some reason. Updated that. Also made all the URLs relative. silly me for having them absolute to begin with. ",
+            "project": "bento",
+            "title": "Quick update."
+        },
+        {
+            "author": "Toben Archer",
+            "branch": "master",
+            "date": "2020-07-06",
+            "message": "I've got new documents to load correctly as well as loading old documents. It took a little effort due to some name changes. Hopefully I will no have a consistent permanent naming schemea. Now if I can get saving via diffs rather than entire document working then I will be up to basic functionality. ",
+            "project": "bento",
+            "title": "Just need to work on diffs now."
+        },
+        {
+            "author": "Toben Archer",
+            "branch": "master",
+            "date": "2020-07-06",
+            "message": "I'm rewriting the backend in SQL alchemy to make it a little easier to maintain, theoretically. It is being a pain in the neck to get up in the first place. I think I've almost got it there but have run out of time for this evening. ",
+            "project": "bento",
+            "title": "Rewriting in SQLAlchemy"
+        },
+        {
+            "author": "Toben Archer",
+            "branch": "master",
+            "date": "2020-07-02",
+            "message": "I've got a legit editor. It saves once persecond if it detects a change. Those saves are saved into the database. There is a document selector that you can use to select a document. Make edits. Automatically it saves so you just click \"back\" and go back to the home screen. Select a different doc or create a new one. I have proven I can make this.\n\nNow the process will be to make it good. I think I can patch together other people's tech for that side of things though. The tutorial I mentioned a few commits back will come into play here now. Allowing me to have a react program running on top of Flask. ",
+            "project": "bento",
+            "title": "Works! Fully functional."
+        },
+        {
+            "author": "Toben Archer",
+            "branch": "master",
+            "date": "2020-07-02",
+            "message": "You can make docs and edit them now. CRU, no D yet. But this is just a guy playing around so things will move a bit slowly. I've got a long way to go to get this up to the system I dream it to be, but I am pleased with what I've got so far. ",
+            "project": "bento",
+            "title": "Got it up and running!"
+        },
+        {
+            "author": "Toben Archer",
+            "branch": "master",
+            "date": "2020-06-30",
+            "message": "I was trying to keep things simple, but turns out adopting a frame work was part of that.\n\nSo I've got diffs being saved from the WebUI. I need to now create the concept of \"documents\". Right now diffs just save willy nilly. Once I have the documents table operating correctly I can then do validation on the diffs to make sure that they have a valid parent.\n\nRight now I am making the diff hash by hashing the entire diff including the parent diff and time stamp. That should create enough of a randomness function to protect me from collisions.\n\nI'm going to want to use React I think for the front end as things get more complicated. I found a tutorial here to follow next time:\n\nhttps://blog.learningdollars.com/2019/11/29/how-to-serve-a-reactapp-with-a-flask-server/\n\nI actually tried to create two seperate apps, a react app and a flask app but then I ran into CORS issues and did not want to deal with that. So I'll bring the UI and the api in under one roof and call it good. ",
+            "project": "bento",
+            "title": "Moved over to flask."
+        },
+        {
+            "author": "Toben Archer",
+            "branch": "master",
+            "date": "2020-06-29",
+            "message": "I'm trying to see if I can make a diff based document editor. ",
+            "project": "bento",
+            "title": "Initial commit of this little toy."
+        }
+    ],
+    "url": "/benot"
+}

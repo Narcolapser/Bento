@@ -11,9 +11,7 @@ app = Flask(__name__)
 
 @app.route("/")
 def home():
-	docs = model.get_documents()
-	print('documents: {}'.format(docs))
-	return render_template('index.html', docs=docs, flask_token="Hello world")
+	return render_template('index.html', doc_type='folder', name='/', doc_id=1)
 
 @app.route("/doc/<doc_id>")
 def show_doc(doc_id):
@@ -22,9 +20,8 @@ def show_doc(doc_id):
 	print(doc)
 	if not diff['parent']:
 		diff['parent'] = 0
-	
-	return render_template('doc.html', doc_id = doc_id, parent=diff['parent'],
-				content=doc.head, title=doc.name)
+
+	return render_template('index.html', doc_type='text', name=doc.name, doc_id=doc_id)
 
 @app.route("/api/path/", defaults={'path': '/'})
 @app.route("/api/path/<path:path>")
@@ -40,16 +37,32 @@ def get_directory(path):
 	
 	return jsonify({'folders':folders,'documents':docs})
 
+@app.route("/api/folder/<folder_id>")
+def get_folder(folder_id):
+	try:
+		folder = model.get_folder(folder_id)
+		if not folder:
+			return jsonify({'result':'failure','reason':'path does not exist.'})
+	except Exception as e:
+		return jsonify({'result':'failure','reason':'path does not exist.','error':str(e)})
+	folders, docs = model.get_folder_children(folder)
+	print(folders,docs)
+	
+	return jsonify({'folders':folders,'documents':docs})
+	
+@app.route("/api/doc/<doc_id>")
+def get_doc(doc_id):
+	doc = model.get_document(doc_id)
+	return jsonify(doc.dict())
+
 @app.route("/api/doc/", methods=['POST'])
 def new_doc():
 	# Create the document.
 	data = json.loads(request.data.decode('utf-8'))
-	print(data)
 	doc = Document()
 	doc.name = data['name']
 	doc.doc_type = 'text'
-	doc.path = model.get_folder_from_path(data['path'])
-	
+	doc.folder = model.get_folder_from_path(data['path']).id
 	doc = model.save_document(doc)
 	
 	diff = Diff()
@@ -61,7 +74,6 @@ def new_doc():
 	diff.content = ''
 	
 	model.save_diff(diff)
-	print('Returning dictionary: {}'.format(doc.dict()))
 	return jsonify(doc.dict())
 
 @app.route("/api/diff/<doc_id>", methods = ['POST'])
@@ -83,7 +95,7 @@ def post_diff(doc_id):
 	return jsonify({"status":"success"})
 
 @app.route("/api/diff/<docid>", methods = ['GET'])
-def get_doc(docid):
+def get_diff(docid):
 	db = sqlite3.connect(db_name)
 	cur = db.cursor()
 	print(docid)

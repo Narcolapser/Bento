@@ -55,6 +55,14 @@ def get_folder_from_path(path):
 	else:
 		return None
 
+def get_folder(folder_id):
+	session = SqlSession()
+	query = session.query(Folder).filter(Folder.id==folder_id)
+	if query.count():
+		return query[0]
+	else:
+		return None
+
 def get_folder_children(folder):
 	session = SqlSession()
 	#folder = session.query(Folder).filter(Folder.id==folder_id)[0]
