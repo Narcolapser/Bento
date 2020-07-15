@@ -11,7 +11,11 @@
     "2.js.LICENSE.txt": "/static/react/2.js.LICENSE.txt",
     "logo.svg": "/static/react/5d5d9eefa31e5e13a6610d9fa7a283bb.svg",
     "main.css.map": "/static/react/main.css.map",
+<<<<<<< HEAD
     "precache-manifest.03ae56b88a02bd3a281630d4d802328c.js": "/static/react/precache-manifest.03ae56b88a02bd3a281630d4d802328c.js",
+=======
+    "precache-manifest.12a5542fa847c6738da5a9fc2d7f2bd8.js": "/static/react/precache-manifest.12a5542fa847c6738da5a9fc2d7f2bd8.js",
+>>>>>>> 4fdf85ab5325bba10bf9502cbf9a178ce74d5fa7
     "service-worker.js": "/static/react/service-worker.js"
   },
   "entrypoints": [
