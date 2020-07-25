@@ -4,8 +4,8 @@ import axios from 'axios';
 export class Editor extends React.Component {
 	constructor(props) {
 		super(props);
-		let time = new Date().getTime()
-		this.state = {content: '', hash: 0, timestamp: time}
+		let time = new Date().getTime();
+		this.state = {content: '', old_content: '', hash: 0, timestamp: time}
 		this.updateContent = this.updateContent.bind(this);
 	}
 	
@@ -17,7 +17,7 @@ export class Editor extends React.Component {
 
 	async postData (content)
 	{
-		if (content != this.state.content)
+		if (content != this.state.old_content)
 		{
 			console.log('Posting diff');
 			let diff = {
@@ -36,13 +36,16 @@ export class Editor extends React.Component {
 				body: JSON.stringify(diff)
 			});
 			
-			this.state = {content: content, hash: hash};
+			this.setState({content: content, hash: hash, timestamp:new Date().getTime()});
 		}
 	}
 	updateContent(event)
 	{
 		console.log(event.target.value);
-		this.postData(event.target.value);
+		let time = (new Date().getTime() - this.state.timestamp) / 1000;
+		console.log(time);
+		if (time > 2) // increase this value to decrease refresh rate. 
+			this.postData(event.target.value);
 		this.setState({content: event.target.value});
 	}
 
@@ -63,6 +66,6 @@ export class Editor extends React.Component {
 	componentDidMount()
 	{
 		axios.get('/api/doc/' + this.props.document)
-		.then(response => this.setState({content:response.data.head}));
+		.then(response => this.setState({content:response.data.head,old_content:response.data.head}));
 	}
 }
