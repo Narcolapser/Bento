@@ -21,11 +21,18 @@ export class Editor extends React.Component {
 	{
 		if (content != this.state.old_content)
 		{
-			console.log(Diff.createPatch('doc',this.state.old_content, content, 'old header','new header', {}))
+			let patch = Diff.createPatch('doc',this.state.old_content, content, 'old header','new header', {context:1});
+
+			// Trim extra lines out of the patch.
+			let patch_lines = patch.split('\n');
+			patch_lines.splice(0,2);
+			patch = patch_lines.join('\n');
+			
+			console.log(patch);
 			console.log('Posting diff');
 			let diff = {
 				'time':new Date().getTime(),
-				'content':content,
+				'content':patch,
 				'author':'toben',
 				'document':this.props.document,
 				'parent':this.state.hash
@@ -39,7 +46,7 @@ export class Editor extends React.Component {
 				body: JSON.stringify(diff)
 			});
 			
-			this.setState({content: content, hash: hash, timestamp:new Date().getTime()});
+			this.setState({content: content, hash: hash, timestamp:new Date().getTime(), old_content: content});
 		}
 	}
 	updateContent(event)

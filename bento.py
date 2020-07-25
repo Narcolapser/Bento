@@ -89,7 +89,7 @@ def post_diff(doc_id):
 	model.save_diff(diff)
 	
 	doc = model.get_document(doc_id)
-	doc.head = data['content']
+	doc.apply_patch(data['content'])
 	model.save_document(doc)
 
 	return jsonify({"status":"success"})

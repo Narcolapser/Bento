@@ -3,7 +3,12 @@ from sqlalchemy import Column, Integer, String, ForeignKey
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, relationship
 from sqlalchemy.orm.attributes import InstrumentedAttribute
+import difflib
+import re
 import os
+
+_no_eol = "\ No newline at end of file"
+_hdr_pat = re.compile("^@@ -(\d+),?(\d+)? \+(\d+),?(\d+)? @@$")
 
 db_name = 'docs.sql'
 refresh = False
@@ -118,6 +123,40 @@ class Document(Base):
 	def __repr__(self):
 		path = '/'
 		return 'Doc( id: {} path: {} type: {})'.format(self.id, path + self.name, self.doc_type)
+		
+	def apply_patch(self, patch, revert=False):
+		self.head = self._apply_patch(self.head, patch, revert)
+	
+	def _apply_patch(self, s, patch, revert=False):
+		"""
+		Apply patch to string s to recover newer string.
+		If revert is True, treat s as the newer string, recover older string.
+		Copied from: https://gist.github.com/noporpoise/16e731849eb1231e86d78f9dfeca3abc
+		"""
+		print((patch,s))
+		s = s.splitlines(True)
+		p = patch.splitlines(True)
+		t = ''
+		i = sl = 0
+		(midx,sign) = (1,'+') if not revert else (3,'-')
+		while i < len(p) and p[i].startswith(("---","+++")): i += 1 # skip header lines
+		while i < len(p):
+			m = _hdr_pat.match(p[i])
+			if not m: raise Exception("Bad patch -- regex mismatch [line "+str(i)+"]")
+			l = int(m.group(midx))-1 + (m.group(midx+1) == '0')
+			if sl > l or l > len(s):
+				raise Exception("Bad patch -- bad line num [line "+str(i)+"]")
+			t += ''.join(s[sl:l])
+			sl = l
+			i += 1
+			while i < len(p) and p[i][0] != '@':
+				if i+1 < len(p) and p[i+1][0] == '\\': line = p[i][:-1]; i += 2
+				else: line = p[i]; i += 1
+				if len(line) > 0:
+					if line[0] == sign or line[0] == ' ': t += line[1:]
+					sl += (line[0] != sign)
+		t += ''.join(s[sl:])
+		return t
 
 
 class Diff(Base):
