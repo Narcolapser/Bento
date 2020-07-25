@@ -4,13 +4,16 @@ import axios from 'axios';
 export class Editor extends React.Component {
 	constructor(props) {
 		super(props);
-		this.state = {content: '', hash: 0}
+		let time = new Date().getTime()
+		this.state = {content: '', hash: 0, timestamp: time}
+		this.updateContent = this.updateContent.bind(this);
 	}
 	
 	hashCode(str) {
 		return str.split('').reduce((prevHash, currVal) =>
 			(((prevHash << 5) - prevHash) + currVal.charCodeAt(0))|0, 0);
 	}
+	
 
 	async postData (content)
 	{
@@ -36,6 +39,12 @@ export class Editor extends React.Component {
 			this.state = {content: content, hash: hash};
 		}
 	}
+	updateContent(event)
+	{
+		console.log(event.target.value);
+		this.postData(event.target.value);
+		this.setState({content: event.target.value});
+	}
 
 	render() {
 		return (
@@ -43,7 +52,8 @@ export class Editor extends React.Component {
 				<h2>{this.props.name}</h2>
 				<label for="editor">Editor</label>
 				<br/>
-				<textarea id="editor" name="editor" rows="10" cols="50">{this.state.content}</textarea>
+				<textarea id="editor" name="editor" rows="10" cols="50"
+					onChange={this.updateContent} value={this.state.content} />
 				<br/>
 				<a href="/">Back</a>
 			</div>

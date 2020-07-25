@@ -53,6 +53,8 @@ def get_folder(folder_id):
 @app.route("/api/doc/<doc_id>")
 def get_doc(doc_id):
 	doc = model.get_document(doc_id)
+	# To stop the UI from putting 'None' in the editor on a blank document.
+	if not doc.head: doc.head = ''
 	return jsonify(doc.dict())
 
 @app.route("/api/doc/", methods=['POST'])
