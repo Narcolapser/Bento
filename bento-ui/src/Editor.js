@@ -1,5 +1,7 @@
 import React from 'react';
 import axios from 'axios';
+//import Diff from 'diff';
+let Diff = require('diff');
 
 export class Editor extends React.Component {
 	constructor(props) {
@@ -19,6 +21,7 @@ export class Editor extends React.Component {
 	{
 		if (content != this.state.old_content)
 		{
+			console.log(Diff.createPatch('doc',this.state.old_content, content, 'old header','new header', {}))
 			console.log('Posting diff');
 			let diff = {
 				'time':new Date().getTime(),
