@@ -5,7 +5,7 @@ import random
 import time
 import os
 import model
-from model import Folder, Document, Diff
+from model import Folder, Document, Diff, NoParentDiff
 
 app = Flask(__name__)
 
@@ -53,7 +53,8 @@ def get_folder(folder_id):
 @app.route("/api/doc/<doc_id>")
 def get_doc(doc_id):
 	doc = model.get_document(doc_id)
-	return jsonify(doc.dict())
+	current_diff = model.get_head_diff(doc_id)
+	return jsonify([doc.dict(),current_diff])
 
 @app.route("/api/doc/", methods=['POST'])
 def new_doc():
@@ -80,19 +81,62 @@ def new_doc():
 def post_diff(doc_id):
 	data = json.loads(request.data.decode('utf-8'))
 	diff = Diff()
-	diff.diff_hash = data['hash']
+	diff.diff_hash = data['diff_hash']
 	diff.document  = data['document']
 	diff.parent    = data['parent']
 	diff.content   = data['content']
 	diff.author    = data['author']
 	diff.time      = data['time']
-	model.save_diff(diff)
+	try:
+		model.save_diff(diff)
+	except NoParentDiff:
+		return jsonify({"status":"failure","reason":"The diff provided as parent did not exist.",
+						"latest diff":model.get_head_diff(doc_id)})
 	
 	doc = model.get_document(doc_id)
 	doc.apply_patch(data['content'])
 	model.save_document(doc)
 
 	return jsonify({"status":"success"})
+
+@app.route("/api/diffs/<doc_id>", methods = ['POST'])
+def post_diff_stack(doc_id):
+	data = json.loads(request.data.decode('utf-8'))
+	head = model.get_head_diff(doc_id)
+	match = None
+	
+	pointer = len(data) - 1
+	while not match and pointer >= 0:
+		print('Searching for {}. currently at {}:{}'.format(head['diff_hash'],pointer,data[pointer]['parent']))
+		if data[pointer]['parent'] == head['diff_hash']:
+			match = pointer
+		pointer -= 1
+		
+	# I'll have to make this more complex later, but dealing with it all now will keep me from 
+	# ccomplishing anything. The problem with this is that the head of the document might have 
+	# changed and the current editor may not be aware of that. But as I currently don't have to
+	# worry about multiple users editing at the same time I'm going to just leave this failure case
+	# in this simple form for now.
+	if not match:
+		return jsonify({'status':'failure','reason':'document head not in diffs.'})
+	
+	# Apply the diffs from the point where we found a parent match to the end to bring the backend
+	# up to date with the front end.
+	diffs = data[match:]
+	doc = model.get_document(doc_id)
+	for diff in diffs:
+		new_diff = Diff()
+		new_diff.diff_hash = diff['diff_hash']
+		new_diff.document  = diff['document']
+		new_diff.parent    = diff['parent']
+		new_diff.content   = diff['content']
+		new_diff.author    = diff['author']
+		new_diff.time      = diff['time']
+		model.save_diff(new_diff)
+		doc.apply_patch(diff['content'])
+	model.save_document(doc)
+	
+	return jsonify({'status':'success'})
 
 @app.route("/api/diff/<docid>", methods = ['GET'])
 def get_diff(docid):

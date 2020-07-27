@@ -7,7 +7,7 @@ export class Editor extends React.Component {
 	constructor(props) {
 		super(props);
 		let time = new Date().getTime();
-		this.state = {content: '', old_content: '', hash: 0, timestamp: time}
+		this.state = {content: '', old_content: '', hash: 0, timestamp: time, diff_stack: []}
 		this.updateContent = this.updateContent.bind(this);
 	}
 	
@@ -25,7 +25,7 @@ export class Editor extends React.Component {
 
 			// Trim extra lines out of the patch.
 			let patch_lines = patch.split('\n');
-			patch_lines.splice(0,2);
+			patch_lines.splice(0,4);
 			patch = patch_lines.join('\n');
 			
 			console.log(patch);
@@ -35,23 +35,41 @@ export class Editor extends React.Component {
 				'content':patch,
 				'author':'toben',
 				'document':this.props.document,
-				'parent':this.state.hash
+				'parent':this.state.diff_stack[this.state.diff_stack.length-1].diff_hash
 			}
 			let hash = this.hashCode(JSON.stringify(diff));
-			diff['hash'] = hash;
-			const response = await fetch('/api/diff/' + this.props.document, {
-				method: 'POST',
-				mode: 'cors',
-				headers: {'Content-Type': 'application/json'},
-				body: JSON.stringify(diff)
-			});
+			diff['diff_hash'] = hash;
 			
-			this.setState({content: content, hash: hash, timestamp:new Date().getTime(), old_content: content});
+			let diff_stack = this.state.diff_stack;
+			diff_stack.push(diff)
+			this.setState({content: content, hash: hash, timestamp:new Date().getTime(), old_content: content, diff_stack: diff_stack});
+			
+			let rand = Math.floor(Math.random()*2);
+			if (rand == 0)
+			{
+				axios.post('/api/diff/' + this.props.document, diff)
+				.then((response) => {
+					if (response.data.status == 'failure')
+					{
+						if (response.data.reason == 'The diff provided as parent did not exist.')
+							this.postStack();
+					}
+				});
+			}
+			else
+				console.log("skipped");
 		}
+	}
+	
+	async postStack()
+	{
+		axios.post('/api/diffs/' + this.props.document, this.state.diff_stack)
+		.then((response) => {console.log("Stack posted"); console.log(response);});
 	}
 	updateContent(event)
 	{
 		console.log(event.target.value);
+		console.log(this.state.diff_stack);
 		let time = (new Date().getTime() - this.state.timestamp) / 1000;
 		console.log(time);
 		if (time > 2) // increase this value to decrease refresh rate. 
@@ -76,6 +94,8 @@ export class Editor extends React.Component {
 	componentDidMount()
 	{
 		axios.get('/api/doc/' + this.props.document)
-		.then(response => this.setState({content:response.data.head,old_content:response.data.head}));
+		.then(response => this.setState({content:response.data[0].head,
+										old_content:response.data[0].head,
+										diff_stack:[response.data[1]]}));
 	}
 }

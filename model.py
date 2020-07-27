@@ -31,6 +31,9 @@ diff_insert = "INSERT INTO Diffs Values ({},{},'{}','{}','{}',{})"
 diff_insert = "INSERT INTO Diffs(DiffHash, DocID, Parent, Diff, Author, Time) VALUES(?,?,?,?,?,?)"
 diff_select = "SELECT * FROM Diffs WHERE DocID=? ORDER BY Time DESC LIMIT 1"
 
+class NoParentDiff(Exception):
+	pass
+
 
 def get_documents():
 	session = SqlSession()
@@ -77,8 +80,16 @@ def get_folder_children(folder):
 	docs = [doc.dict() for doc in session.query(Document).filter(Document.folder==folder.id)]
 	return (folders,docs)
 
-def save_diff(diff):
+def save_diff(diff, override = False):
 	session = SqlSession()
+
+	# The initial diff will not have a parent. It needs the ability to override this check.
+	if not override:
+		parent = get_diff(diff.parent)
+		if not parent:
+			print('Refusing diff as the parent is unknown.')
+			raise NoParentDiff('The parent for this diff could not be found')
+
 	session.add(diff)
 	session.commit()
 	return diff
@@ -86,7 +97,11 @@ def save_diff(diff):
 def get_diff(diff_hash):
 	session = SqlSession()
 	query = session.query(Diff).filter(Diff.diff_hash==diff_hash)
-	return query[0].dict()
+	results = [r for r in query]
+	if len(results):
+		return query[0].dict()
+	else:
+		return None
 
 def get_head_diff(doc_id):
 	session = SqlSession()
