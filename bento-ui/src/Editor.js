@@ -24,6 +24,10 @@ export class Editor extends React.Component {
 	{
 		if (content != this.state.old_content)
 		{
+			console.log('Start');
+			console.log(this.state.old_content);
+			console.log(content);
+			console.log('end');
 			let patch = Diff.createPatch('doc',this.state.old_content, content, 'old header','new header', {context:1});
 
 			// Trim extra lines out of the patch.
@@ -79,19 +83,26 @@ export class Editor extends React.Component {
 			<div>
 				<h2>{this.props.name}</h2>
 				<br/>
-				<SimpleMDE id="editor" name="editor"
+				<SimpleMDE id="editor" name="editor" style={{textAlign:'left'}}
 					onChange={this.updateContent} value={this.state.content} />
 				<br/>
 				<a href="/">Back</a>
 			</div>
 		);
 	}
+	
+	fillContent(data)
+	{
+		console.log(data);
+		let c = data[0].head;
+		if (c == null)
+			c = '';
+		this.setState({content:c,old_content:c,diff_stack:[data[1]]});
+	}
 
 	componentDidMount()
 	{
 		axios.get('/api/doc/' + this.props.document)
-		.then(response => this.setState({content:response.data[0].head,
-										old_content:response.data[0].head,
-										diff_stack:[response.data[1]]}));
+		.then(response => this.fillContent(response.data));
 	}
 }

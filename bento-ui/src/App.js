@@ -45,6 +45,7 @@ function App() {
 	return (
 		<div className="App">
 		<h1>Bento!</h1> 
+		<button onClick={new_doc}>New</button>
 		{ disp }
 		</div>
 	);

@@ -74,7 +74,7 @@ def new_doc():
 	diff.time = time.time()
 	diff.content = ''
 	
-	model.save_diff(diff)
+	model.save_diff(diff, override=True)
 	return jsonify(doc.dict())
 
 @app.route("/api/diff/<doc_id>", methods = ['POST'])

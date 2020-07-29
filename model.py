@@ -148,6 +148,8 @@ class Document(Base):
 		If revert is True, treat s as the newer string, recover older string.
 		Copied from: https://gist.github.com/noporpoise/16e731849eb1231e86d78f9dfeca3abc
 		"""
+		if not s:
+			s = ''
 		print((patch,s))
 		s = s.splitlines(True)
 		p = patch.splitlines(True)
