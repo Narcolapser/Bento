@@ -1,13 +1,16 @@
 import React from 'react';
 import axios from 'axios';
 //import Diff from 'diff';
+import SimpleMDE from "react-simplemde-editor";
+import "easymde/dist/easymde.min.css";
 let Diff = require('diff');
+
 
 export class Editor extends React.Component {
 	constructor(props) {
 		super(props);
 		let time = new Date().getTime();
-		this.state = {content: '', old_content: '', hash: 0, timestamp: time, diff_stack: []}
+		this.state = {content: '', old_content: 'loading...', hash: 0, timestamp: time, diff_stack: []}
 		this.updateContent = this.updateContent.bind(this);
 	}
 	
@@ -44,20 +47,14 @@ export class Editor extends React.Component {
 			diff_stack.push(diff)
 			this.setState({content: content, hash: hash, timestamp:new Date().getTime(), old_content: content, diff_stack: diff_stack});
 			
-			let rand = Math.floor(Math.random()*2);
-			if (rand == 0)
-			{
-				axios.post('/api/diff/' + this.props.document, diff)
-				.then((response) => {
-					if (response.data.status == 'failure')
-					{
-						if (response.data.reason == 'The diff provided as parent did not exist.')
-							this.postStack();
-					}
-				});
-			}
-			else
-				console.log("skipped");
+			axios.post('/api/diff/' + this.props.document, diff)
+			.then((response) => {
+				if (response.data.status == 'failure')
+				{
+					if (response.data.reason == 'The diff provided as parent did not exist.')
+						this.postStack();
+				}
+			});
 		}
 	}
 	
@@ -66,24 +63,23 @@ export class Editor extends React.Component {
 		axios.post('/api/diffs/' + this.props.document, this.state.diff_stack)
 		.then((response) => {console.log("Stack posted"); console.log(response);});
 	}
-	updateContent(event)
+	updateContent(value)
 	{
-		console.log(event.target.value);
+		console.log(value);
 		console.log(this.state.diff_stack);
 		let time = (new Date().getTime() - this.state.timestamp) / 1000;
 		console.log(time);
 		if (time > 2) // increase this value to decrease refresh rate. 
-			this.postData(event.target.value);
-		this.setState({content: event.target.value});
+			this.postData(value);
+		this.setState({content: value});
 	}
 
 	render() {
 		return (
 			<div>
 				<h2>{this.props.name}</h2>
-				<label for="editor">Editor</label>
 				<br/>
-				<textarea id="editor" name="editor" rows="10" cols="50"
+				<SimpleMDE id="editor" name="editor"
 					onChange={this.updateContent} value={this.state.content} />
 				<br/>
 				<a href="/">Back</a>

@@ -5,17 +5,20 @@
     "main.js.map": "/static/react/main.js.map",
     "runtime-main.js": "/static/react/runtime-main.js",
     "runtime-main.js.map": "/static/react/runtime-main.js.map",
+    "2.css": "/static/react/2.css",
     "2.js": "/static/react/2.js",
     "2.js.map": "/static/react/2.js.map",
     "../../templates/index.html": "/static/react/../../templates/index.html",
+    "2.css.map": "/static/react/2.css.map",
     "2.js.LICENSE.txt": "/static/react/2.js.LICENSE.txt",
     "logo.svg": "/static/react/5d5d9eefa31e5e13a6610d9fa7a283bb.svg",
     "main.css.map": "/static/react/main.css.map",
-    "precache-manifest.543702aaaebf2331f3cbf1f7e527d348.js": "/static/react/precache-manifest.543702aaaebf2331f3cbf1f7e527d348.js",
+    "precache-manifest.306abdf6ba865c671ab5606aff31f384.js": "/static/react/precache-manifest.306abdf6ba865c671ab5606aff31f384.js",
     "service-worker.js": "/static/react/service-worker.js"
   },
   "entrypoints": [
     "runtime-main.js",
+    "2.css",
     "2.js",
     "main.css",
     "main.js"
