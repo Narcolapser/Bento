@@ -1,6 +1,7 @@
 {
-	"path":"/home/toben/Code/ssg/benot",
+	"path":"/home/toben/Code/ssg/bento",
 	"name":"Bento",
-	"url":"/benot",
-	"description":"Simple cloud documents in your private cloud."
+	"url":"/bento",
+	"description":"Simple cloud documents in your private cloud.",
+	"rank":17
 }

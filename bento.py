@@ -1,4 +1,5 @@
 from flask import Flask, request, render_template, jsonify
+from flask_basicauth import BasicAuth
 import json
 import sqlite3
 import random
@@ -8,6 +9,17 @@ import model
 from model import Folder, Document, Diff, NoParentDiff
 
 app = Flask(__name__)
+
+class BentoAuth(BasicAuth):
+	def check_credentials(self, username, password):
+		users = json.load(open('./users.json'))
+		if username in users:
+			if users[username] == password:
+				return True
+		return False
+
+basic_auth = BentoAuth(app)
+app.config['BASIC_AUTH_FORCE'] = True
 
 @app.route("/")
 def home():
