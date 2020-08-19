@@ -3,5 +3,6 @@
 	"name":"Bento",
 	"url":"/bento",
 	"description":"Simple cloud documents in your private cloud.",
-	"rank":17
+	"rank":17,
+	"files":[]
 }
