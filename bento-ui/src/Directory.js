@@ -45,9 +45,9 @@ export class Item extends React.Component {
 	
 	render() {
 		let symbol = '⁉';
-		if (this.props.type == 'folder')
+		if (this.props.type === 'folder')
 			symbol = '📁';
-		else if (this.props.type == 'text')
+		else if (this.props.type === 'text')
 			symbol = '␃';
 
 		return (

@@ -18,8 +18,9 @@ class BentoAuth(BasicAuth):
 				return True
 		return False
 
-basic_auth = BentoAuth(app)
-app.config['BASIC_AUTH_FORCE'] = True
+if os.path.isfile('users.json'):
+	basic_auth = BentoAuth(app)
+	app.config['BASIC_AUTH_FORCE'] = True
 
 @app.route("/")
 def home():
