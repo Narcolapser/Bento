@@ -27,6 +27,7 @@ export class Editor extends React.Component {
 			console.log('Start');
 			console.log(this.state.old_content);
 			console.log(this.state.content);
+			console.log(this.state.diff_stack);
 			console.log('end');
 			let patch = Diff.createPatch('doc',this.state.old_content, this.state.content, 'old header','new header', {context:0});
 
@@ -109,7 +110,21 @@ export class Editor extends React.Component {
 	
 	pullData()
 	{
-		
+		axios.get('/api/diff/' + this.props.document)
+		.then(response => {
+			console.log({resp:response,obj:this});
+			console.log('Current hash on server: ' + response.data.diff_hash);
+			console.log('Current hash locally: ' + this.state.diff_stack[this.state.diff_stack.length-1].diff_hash);
+			if (response.data.diff_hash !== this.state.diff_stack[this.state.diff_stack.length-1].diff_hash)
+			{
+				//The remote document has changed!
+				console.log('//The remote document has changed!');
+			}
+			else
+			{
+				console.log('Still in sync');
+			}
+		});
 	}
 	
 	check()

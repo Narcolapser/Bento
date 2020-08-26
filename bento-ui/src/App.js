@@ -28,13 +28,13 @@ async function new_doc()
 		 
 } 
 
-function load_doc() 
-{ 
-	let l = document.getElementById("doc_list"); 
-	let url = "/doc/" + l.options[l.selectedIndex].value; 
-	console.log(url); 
-	window.location = url; 
-}
+//function load_doc() 
+//{ 
+//	let l = document.getElementById("doc_list"); 
+//	let url = "/doc/" + l.options[l.selectedIndex].value; 
+//	console.log(url); 
+//	window.location = url; 
+//}
 
 function App() {
 	let disp = '';

@@ -151,17 +151,11 @@ def post_diff_stack(doc_id):
 	
 	return jsonify({'status':'success'})
 
-@app.route("/api/diff/<docid>", methods = ['GET'])
-def get_diff(docid):
-	db = sqlite3.connect(db_name)
-	cur = db.cursor()
-	print(docid)
-	cur.execute(diff_select.format(docid))
-	data = cur.fetchone()
-	cur.close()
-	db.close()
+@app.route("/api/diff/<doc_id>", methods = ['GET'])
+def get_diff(doc_id):
+	head = model.get_head_diff(doc_id)
 	
-	return json.dumps(data)
+	return jsonify(head)
 
 if __name__ == "__main__":
 	app.run(debug=True)
