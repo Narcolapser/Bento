@@ -38,7 +38,7 @@ async function new_doc()
 
 function App() {
 	let disp = '';
-	if (window.bento_type == 'folder')
+	if (window.bento_type === 'folder')
 		disp = (<Directory folder={window.bento_id} name={window.bento_name}></Directory>)
 	else
 		disp = (<Editor document={window.bento_id} name={window.bento_name}></Editor>)

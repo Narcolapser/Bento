@@ -112,17 +112,11 @@ export class Editor extends React.Component {
 	{
 		axios.get('/api/diff/' + this.props.document)
 		.then(response => {
-			console.log({resp:response,obj:this});
-			console.log('Current hash on server: ' + response.data.diff_hash);
-			console.log('Current hash locally: ' + this.state.diff_stack[this.state.diff_stack.length-1].diff_hash);
 			if (response.data.diff_hash !== this.state.diff_stack[this.state.diff_stack.length-1].diff_hash)
 			{
 				//The remote document has changed!
-				console.log('//The remote document has changed!');
-			}
-			else
-			{
-				console.log('Still in sync');
+				axios.get('/api/doc/' + this.props.document)
+				.then(response => this.fillContent(response.data));
 			}
 		});
 	}
