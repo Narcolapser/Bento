@@ -11,9 +11,8 @@
     "../../templates/index.html": "/static/react/../../templates/index.html",
     "2.css.map": "/static/react/2.css.map",
     "2.js.LICENSE.txt": "/static/react/2.js.LICENSE.txt",
-    "logo.svg": "/static/react/5d5d9eefa31e5e13a6610d9fa7a283bb.svg",
     "main.css.map": "/static/react/main.css.map",
-    "precache-manifest.93303d0140aabdfa2f08c211ff9f3aa0.js": "/static/react/precache-manifest.93303d0140aabdfa2f08c211ff9f3aa0.js",
+    "precache-manifest.2bc0efc955a31ea112d44967d85144fd.js": "/static/react/precache-manifest.2bc0efc955a31ea112d44967d85144fd.js",
     "service-worker.js": "/static/react/service-worker.js"
   },
   "entrypoints": [

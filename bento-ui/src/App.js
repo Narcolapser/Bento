@@ -1,5 +1,4 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
 import { Directory } from './Directory.js';
 import { Editor } from './Editor.js';
@@ -10,7 +9,7 @@ async function new_doc()
 { 
 	let name = prompt("Name of new document: ","Untitled"); 
 	console.log(name); 
-	const response = await fetch('/api/doc/', { 
+	await fetch('/api/doc/', { 
 		method: 'POST', 
 		mode: 'cors', 
 		headers: {'Content-Type': 'application/json'}, 
@@ -25,7 +24,6 @@ async function new_doc()
 			console.log(url); 
 			window.location = url; 
 		}); 
-		 
 } 
 
 //function load_doc() 

@@ -114,9 +114,13 @@ export class Editor extends React.Component {
 		.then(response => {
 			if (response.data.diff_hash !== this.state.diff_stack[this.state.diff_stack.length-1].diff_hash)
 			{
+				let hashes = [];
+				for(let i = 0; i < this.state.diff_stack.length; i++)
+					hashes.push(this.state.diff_stack[i].diff_hash);
 				//The remote document has changed!
-				axios.get('/api/doc/' + this.props.document)
-				.then(response => this.fillContent(response.data));
+				if (!hashes.includes(response.data.diff_hash))
+					axios.get('/api/doc/' + this.props.document)
+					.then(response => this.fillContent(response.data));
 			}
 		});
 	}
