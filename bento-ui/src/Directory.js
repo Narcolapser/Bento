@@ -1,5 +1,6 @@
 import React from "react";
-import axios from 'axios'
+import axios from 'axios';
+import { ViewManager } from './DirectoryViews/ViewManager.js'
 
 export class Directory extends React.Component {
 	constructor(props) {
@@ -9,19 +10,13 @@ export class Directory extends React.Component {
 
 	render() {
 		let items = [];
-		for(let i = 0; i < this.state.folders.length; i++)
-			items.push(<Item type='folder' name='/' id="1"></Item>);
-		for(let i = 0; i < this.state.documents.length; i++)
-			items.push(<Item type={this.state.documents[i].doc_type}
-							 name={this.state.documents[i].name}
-							 id={this.state.documents[i].id}></Item>);
 		
 		return (
 			<div>
+				<h1>Bento!</h1> 
+				<button onClick={new_doc}>New</button>
 				<h2>Current path: {this.props.folder}</h2>
-				<div style={{textAlign: 'left', maxWidth: '50%', margin: 'auto'}}>
-					{ items }
-				</div>
+				<ViewManager folders={this.state.folders} documents={this.state.documents}></ViewManager>
 			</div>
 		);
 	}
@@ -56,4 +51,25 @@ export class Item extends React.Component {
 			</div>
 		);
 	}
+}
+
+async function new_doc()
+{ 
+	let name = prompt("Name of new document: ","Untitled"); 
+	console.log(name); 
+	await fetch('/api/doc/', { 
+		method: 'POST', 
+		mode: 'cors', 
+		headers: {'Content-Type': 'application/json'}, 
+		body: JSON.stringify({name:name, author:'Toben', path:'/'})}) 
+		.then(function(resp) { 
+			console.log('resp: '); 
+			console.log(resp); 
+			return resp.json(); 
+		}).then(function(data) { 
+			console.log(data); 
+			let url = '/doc/' + data['id']; 
+			console.log(url); 
+			window.location = url; 
+		}); 
 }
