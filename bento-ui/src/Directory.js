@@ -5,7 +5,7 @@ import { ViewManager } from './DirectoryViews/ViewManager.js'
 export class Directory extends React.Component {
 	constructor(props) {
 		super(props);
-		this.state = {'folders': ['/'], 'documents': []};
+		this.state = {'folders': [], 'documents': []};
 	}
 
 	render() {
@@ -29,27 +29,6 @@ export class Directory extends React.Component {
 		else
 			axios.get('/api/folder/1')
 			.then(response => this.setState(response.data));
-	}
-}
-
-export class Item extends React.Component {
-	constructor(props) {
-		super(props);
-		console.log(JSON.stringify(props))
-	}
-	
-	render() {
-		let symbol = '⁉';
-		if (this.props.type === 'folder')
-			symbol = '📁';
-		else if (this.props.type === 'text')
-			symbol = '␃';
-
-		return (
-			<div>
-				<a href={'/doc/' + this.props.id}><h3>{symbol} {this.props.name}</h3></a>
-			</div>
-		);
 	}
 }
 

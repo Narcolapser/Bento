@@ -26,6 +26,15 @@ if os.path.isfile('users.json'):
 def home():
 	return render_template('index.html', doc_type='folder', name='/', doc_id=1)
 
+@app.route('/folder/<folder_id>')
+def show_folder(folder_id):
+	try:
+		folder = model.get_folder(folder_id)
+		return render_template('index.html', doc_type='folder', name=folder.path, doc_id=folder_id)
+	except Exception as e:
+		pass
+	return render_template('index.html', doc_type='folder', name='/', doc_id=folder_id)
+
 @app.route("/doc/<doc_id>")
 def show_doc(doc_id):
 	doc = model.get_document(doc_id)
