@@ -2,10 +2,16 @@ import React from "react";
 import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBars, faHome, faSearch } from '@fortawesome/free-solid-svg-icons'
+import { BentoButton } from './BentoButton.js'
 
 export class MainMenu extends React.Component {
 	constructor(props) {
 		super(props);
+	}
+	
+	go_home()
+	{
+		window.location.href="/"
 	}
 
 	render() {
@@ -15,18 +21,12 @@ export class MainMenu extends React.Component {
 		//<h2>Current path: {this.props.folder}</h2>
 		return (
 			<div style={{width:"100%", backgroundColor:"#a0300e", height:"50px"}}>
-				<div style={{width:"50px",float:"left"}}>
-					<FontAwesomeIcon icon={faBars} size="3x"/>
-				</div>
-				<div style={{width:"50px",float:"left"}}>
-					<FontAwesomeIcon icon={faHome} size="3x"/>
-				</div>
+				<BentoButton icon={faBars} float="left"> </BentoButton>
+				<BentoButton icon={faHome} float="left" onClick={go_home}> </BentoButton>
 				<div style={{float:"left", marginLeft:"25px", fontSize:"40px"}}>
 					Home
 				</div>
-				<div style={{width:"50px",float:"right",marginTop:"1px"}}>
-					<FontAwesomeIcon icon={faSearch} size="3x"/>
-				</div>
+				<BentoButton icon={faSearch} float="right"> </BentoButton>
 			</div>
 		);
 	}
