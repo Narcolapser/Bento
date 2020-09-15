@@ -1,12 +1,11 @@
 import React from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { config } from '@fortawesome/fontawesome-svg-core'
-import '@fortawesome/fontawesome-svg-core/styles.css' 
+import { faFolder, faFileAlt } from '@fortawesome/free-solid-svg-icons'
 
 export class GridView extends React.Component {
-	constructor(props) {
-		super(props);
-	}
+//	constructor(props) {
+//		super(props);
+//	}
 
 	render() {
 		let items = [];
@@ -31,9 +30,9 @@ export class GridView extends React.Component {
 }
 
 export class Item extends React.Component {
-	constructor(props) {
-		super(props);
-	}
+//	constructor(props) {
+//		super(props);
+//	}
 	
 	render() {
 		let symbol = '⁉';
@@ -41,10 +40,10 @@ export class Item extends React.Component {
 		if (this.props.type === 'folder')
 		{
 			let pieces = this.props.name.split('/');
-			anchor = (<a href={'/folder/' + this.props.id}><h3><FontAwesomeIcon icon="folder"/> {pieces[pieces.length -2]}</h3></a>)
+			anchor = (<a href={'/folder/' + this.props.id}><h3><FontAwesomeIcon icon={faFolder} /> {pieces[pieces.length -2]}</h3></a>)
 		}
 		else if (this.props.type === 'text')
-			anchor = (<a href={'/doc/' + this.props.id}><h3><FontAwesomeIcon icon='file-text' /> {this.props.name}</h3></a>)
+			anchor = (<a href={'/doc/' + this.props.id}><h3><FontAwesomeIcon icon={faFileAlt} /> {this.props.name}</h3></a>)
 
 		return (
 			<div style={{height: '200px'}}>
