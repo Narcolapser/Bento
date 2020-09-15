@@ -12,7 +12,7 @@ function App() {
 	else
 		disp = (<Editor document={window.bento_id} name={window.bento_name}></Editor>)
 	return (
-		<div className="App">
+		<div className="App" >
 		{ disp }
 		</div>
 	);

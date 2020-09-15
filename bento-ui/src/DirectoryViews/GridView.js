@@ -36,18 +36,37 @@ export class Item extends React.Component {
 	
 	render() {
 		let symbol = '⁉';
-		let anchor = <p>loading...</p>;
+		let link = <p>loading...</p>;
+		let href = null;
+		let icon = null;
+		let name = null;
 		if (this.props.type === 'folder')
 		{
 			let pieces = this.props.name.split('/');
-			anchor = (<a href={'/folder/' + this.props.id}><h3><FontAwesomeIcon icon={faFolder} /> {pieces[pieces.length -2]}</h3></a>)
+			href = '/folder/' + this.props.id
+			icon = <FontAwesomeIcon icon={faFolder} size="6x"/>
+			name = pieces[pieces.length -2]
 		}
 		else if (this.props.type === 'text')
-			anchor = (<a href={'/doc/' + this.props.id}><h3><FontAwesomeIcon icon={faFileAlt} /> {this.props.name}</h3></a>)
+		{
+			href = '/doc/' + this.props.id
+			icon = <FontAwesomeIcon icon={faFileAlt} size="6x"/>
+			name = this.props.name
+		}
+			
+		link = (<a href={href} style={{'color':'white',textDecoration:'none'}}>
+			<div >
+				{icon}
+			</div>
+			<div >
+				<h3> {name}</h3>
+			</div></a>)
 
 		return (
-			<div style={{height: '200px'}}>
-				{anchor}
+			<div >
+				<center>
+					{link}
+				</center>
 			</div>
 		);
 	}
