@@ -1,23 +1,32 @@
 import React from "react";
 import axios from 'axios';
-import { ViewManager } from './DirectoryViews/ViewManager.js'
-import { MainMenu } from './MainMenu.js'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faBars, faHome, faSearch } from '@fortawesome/free-solid-svg-icons'
 
-export class Directory extends React.Component {
+export class MainMenu extends React.Component {
 	constructor(props) {
 		super(props);
-		this.state = {'folders': [], 'documents': []};
 	}
 
 	render() {
 		let items = [];
-		
+		console.log(this.state);
+		//<button onClick={new_doc}>New</button>
+		//<h2>Current path: {this.props.folder}</h2>
 		return (
-			<div>
-				<h1 style={{width:"100%", backgroundColor:"#a0300e", margin:"0px"}}>Bento!</h1> 
-				<MainMenu path={this.props.folder}></MainMenu>
-				<br/>
-				<ViewManager folders={this.state.folders} documents={this.state.documents}></ViewManager>
+			<div style={{width:"100%", backgroundColor:"#a0300e", height:"50px"}}>
+				<div style={{width:"50px",float:"left"}}>
+					<FontAwesomeIcon icon={faBars} size="3x"/>
+				</div>
+				<div style={{width:"50px",float:"left"}}>
+					<FontAwesomeIcon icon={faHome} size="3x"/>
+				</div>
+				<div style={{float:"left", marginLeft:"25px", fontSize:"40px"}}>
+					Home
+				</div>
+				<div style={{width:"50px",float:"right",marginTop:"1px"}}>
+					<FontAwesomeIcon icon={faSearch} size="3x"/>
+				</div>
 			</div>
 		);
 	}
