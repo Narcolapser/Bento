@@ -11,7 +11,6 @@ export class MainMenu extends React.Component {
 	
 	go_home()
 	{
-		console.log('Going home!');
 		window.location.href="/";
 	}
 
@@ -20,14 +19,14 @@ export class MainMenu extends React.Component {
 		console.log(this.state);
 		//<button onClick={new_doc}>New</button>
 		//<h2>Current path: {this.props.folder}</h2>
+		//<BentoButton icon={faSearch} float="right"> </BentoButton>
 		return (
 			<div style={{width:"100%", backgroundColor:"#a0300e", height:"50px"}}>
-				<BentoButton icon={faBars} float="left"> </BentoButton>
+				<BentoButton icon={faBars} float="left" onClick={this.props.open_menu}> </BentoButton>
 				<BentoButton icon={faHome} float="left" onClick={this.go_home}> </BentoButton>
 				<div style={{float:"left", marginLeft:"25px", fontSize:"40px"}}>
 					Home
 				</div>
-				<BentoButton icon={faSearch} float="right"> </BentoButton>
 			</div>
 		);
 	}

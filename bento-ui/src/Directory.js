@@ -2,22 +2,40 @@ import React from "react";
 import axios from 'axios';
 import { ViewManager } from './DirectoryViews/ViewManager.js'
 import { MainMenu } from './MainMenu.js'
+import { SlideMenu } from './SlideMenu.js'
+import { faPlus, faFolderPlus, faCog } from '@fortawesome/free-solid-svg-icons'
 
 export class Directory extends React.Component {
 	constructor(props) {
 		super(props);
-		this.state = {'folders': [], 'documents': []};
+		this.state = {'folders': [], 'documents': [], 'show':false}
+		this.open_menu = this.open_menu.bind(this);
+	}
+	
+	open_menu()
+	{
+		console.log('opening menu');
+		console.log(this.state);
+		this.setState({show: !this.state.show});
 	}
 
+	
 	render() {
-		let items = [];
+		let items = [{icon:faPlus,text:'New File',action:new_doc},
+					{icon:faFolderPlus,text:'New Folder',action:() => {alert('Coming soon!')}},
+					{icon:faCog,text:'Settings',action:() => {alert('Coming soon!')}}];
 		
 		return (
 			<div>
-				<h1 style={{width:"100%", backgroundColor:"#a0300e", margin:"0px"}}>Bento!</h1> 
-				<MainMenu path={this.props.folder}></MainMenu>
-				<br/>
-				<ViewManager folders={this.state.folders} documents={this.state.documents}></ViewManager>
+				<div>
+					<h1 style={{width:"100%", backgroundColor:"#a0300e", margin:"0px"}}>Bento!</h1> 
+					<MainMenu path={this.props.folder} open_menu={this.open_menu}></MainMenu>
+				</div>
+				<div>
+					<SlideMenu show={this.state.show} links={items}></SlideMenu>
+					<br/>
+					<ViewManager folders={this.state.folders} documents={this.state.documents}></ViewManager>
+				</div>
 			</div>
 		);
 	}
