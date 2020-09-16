@@ -1,0 +1,25 @@
+{
+  "files": {
+    "main.css": "/static/react/main.css",
+    "main.js": "/static/react/main.js",
+    "main.js.map": "/static/react/main.js.map",
+    "runtime-main.js": "/static/react/runtime-main.js",
+    "runtime-main.js.map": "/static/react/runtime-main.js.map",
+    "2.css": "/static/react/2.css",
+    "2.js": "/static/react/2.js",
+    "2.js.map": "/static/react/2.js.map",
+    "../../templates/index.html": "/static/react/../../templates/index.html",
+    "2.css.map": "/static/react/2.css.map",
+    "2.js.LICENSE.txt": "/static/react/2.js.LICENSE.txt",
+    "main.css.map": "/static/react/main.css.map",
+    "precache-manifest.b5355d50502a72619d1526578f0daa13.js": "/static/react/precache-manifest.b5355d50502a72619d1526578f0daa13.js",
+    "service-worker.js": "/static/react/service-worker.js"
+  },
+  "entrypoints": [
+    "runtime-main.js",
+    "2.css",
+    "2.js",
+    "main.css",
+    "main.js"
+  ]
+}

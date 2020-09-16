@@ -19,7 +19,7 @@ export class BentoButton extends React.Component {
 			style['backgroundColor'] = '#ba5739'
 
 		return (
-			<div style={style} onMouseEnter={this.toggleHover} onMouseLeave={this.toggleHover}>
+			<div style={style} onMouseEnter={this.toggleHover} onMouseLeave={this.toggleHover} onClick={this.props.onClick}>
 				<FontAwesomeIcon icon={this.props.icon} size="3x"/>
 			</div>
 		);
