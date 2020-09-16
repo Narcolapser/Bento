@@ -26,7 +26,7 @@ export class Directory extends React.Component {
 					{icon:faCog,text:'Settings',action:() => {alert('Coming soon!')}}];
 		
 		return (
-			<div>
+			<div style={{backgroundColor: "#303030", height:"100%"}}>
 				<div>
 					<h1 style={{width:"100%", backgroundColor:"#a0300e", margin:"0px"}}>Bento!</h1> 
 					<MainMenu path={this.props.folder} open_menu={this.open_menu}></MainMenu>

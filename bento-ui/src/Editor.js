@@ -85,7 +85,7 @@ export class Editor extends React.Component {
 				<h2>{this.props.name}</h2>
 				<br/>
 				<SimpleMDE id="editor" name="editor" style={{textAlign:'left'}}
-					onChange={this.updateContent} value={this.state.content} />
+					onChange={this.updateContent} value={this.state.content} spellChecker="false"/>
 				<br/>
 				<a href="/">Back</a>
 			</div>
