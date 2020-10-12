@@ -24,16 +24,16 @@ if os.path.isfile('users.json'):
 
 @app.route("/")
 def home():
-	return render_template('index.html', doc_type='folder', name='/', doc_id=1)
+	return render_template('index.html', doc_type='folder', name='/', doc_id=1, bg_color="dark")
 
 @app.route('/folder/<folder_id>')
 def show_folder(folder_id):
 	try:
 		folder = model.get_folder(folder_id)
-		return render_template('index.html', doc_type='folder', name=folder.path, doc_id=folder_id)
+		return render_template('index.html', doc_type='folder', name=folder.path, doc_id=folder_id, bg_color="dark")
 	except Exception as e:
 		pass
-	return render_template('index.html', doc_type='folder', name='/', doc_id=folder_id)
+	return render_template('index.html', doc_type='folder', name='/', doc_id=folder_id, bg_color="dark")
 
 @app.route("/doc/<doc_id>")
 def show_doc(doc_id):
@@ -43,7 +43,7 @@ def show_doc(doc_id):
 	if not diff['parent']:
 		diff['parent'] = 0
 
-	return render_template('index.html', doc_type='text', name=doc.name, doc_id=doc_id)
+	return render_template('index.html', doc_type='text', name=doc.name, doc_id=doc_id, bg_color="light")
 
 @app.route("/api/path/", defaults={'path': '/'})
 @app.route("/api/path/<path:path>")

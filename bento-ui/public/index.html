@@ -23,14 +23,34 @@
       work correctly both with client-side routing and a non-root public URL.
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
-    <title>Bento</title>
+    {% if name == '/' %}
+        <title>Bento: Home</title>
+    {% else %}
+        <title>Bento: {{name}}</title>
+    {% endif %}
     <script>window.bento_type="{{doc_type}}"</script>
     <script>window.bento_name="{{name}}"</script>
     <script>window.bento_id  ="{{doc_id}}"</script>
+    <script>window.bento_theme  ="{{bg_color}}"</script>
+    {% if bg_color == 'dark' %}
+        <style>
+            .top
+            {
+                background-color: #303030;
+            }
+        </style>
+    {% else %}
+        <style>
+            .top
+            {
+                background-color: #ffffff;
+            }
+        </style>
+    {% endif %}
   </head>
-  <body style="height:100%">
+  <body class="top">
     <noscript>You need to enable JavaScript to run this app.</noscript>
-    <div id="root" style="height:100%"></div>
+    <div id="root"></div>
     <!--
       This HTML file is a template.
       If you open it directly in the browser, you will see an empty page.
