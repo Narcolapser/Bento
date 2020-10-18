@@ -30,6 +30,16 @@ Road Map:
 0.2 
 * Saving diffs instead of entire documents
 * File explorer
+  * File Opearations
+    * New
+    * Rename
+    * Move
+    * Delete
+  * Folder Operations
+    * New
+    * Rename
+    * Move
+    * Delete
 * Rich text editor
 * 
 
@@ -37,6 +47,6 @@ Road Map:
 * New document type: List Editor
 
 0.4 
-* Android App
+* Android App (Probably just do progressive webapp with TWA.)
 
 
