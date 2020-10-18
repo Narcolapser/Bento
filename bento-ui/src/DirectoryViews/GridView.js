@@ -59,11 +59,15 @@ export class Item extends React.Component {
 				{icon}
 			</div>
 			<div >
-				<h3> {name}</h3>
+				<div style={{display:'flex'}}>
+					<h3 style={{flex:1}}></h3>
+					<h3 style={{flex:8}}> {name}</h3>
+					<h3 style={{flex:1}}> ⋮ </h3>
+				</div>
 			</div></a>)
 
 		return (
-			<div >
+			<div style={{borderStyle: "solid",paddingTop: "17px", borderRadius: "10px"}}>
 				<center>
 					{link}
 				</center>
