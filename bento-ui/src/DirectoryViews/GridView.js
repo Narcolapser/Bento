@@ -30,9 +30,37 @@ export class GridView extends React.Component {
 }
 
 export class Item extends React.Component {
-//	constructor(props) {
-//		super(props);
-//	}
+	constructor(props) {
+		super(props)
+		this.state = {hover: false, menu_hover: false}
+		this.hover_on = this.hover_on.bind(this);
+		this.hover_off = this.hover_off.bind(this);
+		this.toggleMenuHover = this.toggleMenuHover.bind(this);
+	}
+
+	hover_on() {
+		this.setState({hover: true});
+	}
+	
+	hover_off() {
+		this.setState({hover: false});
+	}
+	
+	toggleMenuHover(){
+		this.setState({menu_hover: !this.state.menu_hover});
+		this.setState({hover: !this.state.hover});
+	}
+	
+	onClick(href)
+	{
+		window.location = href
+	}
+	
+	menu(event)
+	{
+		event.stopPropagation();
+		console.log('Menu clicked');
+	}
 	
 	render() {
 		let symbol = '⁉';
@@ -53,21 +81,37 @@ export class Item extends React.Component {
 			icon = <FontAwesomeIcon icon={faFileAlt} size="6x"/>
 			name = this.props.name
 		}
-			
-		link = (<a href={href} style={{'color':'white',textDecoration:'none'}}>
-			<div >
+		
+		
+		let menu_style = {flex:1, borderRadius: '8px'}
+		if (this.state.menu_hover)
+			menu_style['backgroundColor'] = '#606060';
+		
+		link = (<div onClick={() => this.onClick(href)} onMouseEnter={this.hover_on} onMouseLeave={this.hover_off}>
+			<div>
 				{icon}
 			</div>
 			<div >
 				<div style={{display:'flex'}}>
 					<h3 style={{flex:1}}></h3>
-					<h3 style={{flex:8}}> {name}</h3>
-					<h3 style={{flex:1}}> ⋮ </h3>
+					<h3 style={{flex:6}}> {name}</h3>
+					<div onClick={this.menu} onMouseEnter={this.toggleMenuHover} onMouseLeave={this.toggleMenuHover} style={menu_style} > <h3> ⋮ </h3></div>
 				</div>
-			</div></a>)
+			</div></div>)
+
+		let style = {
+						borderStyle: "solid",
+						paddingTop: "17px",
+						borderRadius: "10px",
+						color: 'white',
+						borderColor: 'black'
+					}
+
+		if (this.state.hover)
+			style['backgroundColor'] = '#505050'
 
 		return (
-			<div style={{borderStyle: "solid",paddingTop: "17px", borderRadius: "10px"}}>
+			<div style={style}>
 				<center>
 					{link}
 				</center>

@@ -137,7 +137,7 @@ class Document(Base):
 	
 	def __repr__(self):
 		path = '/'
-		return 'Doc( id: {} path: {} type: {})'.format(self.id, path + self.name, self.doc_type)
+		return 'Doc( id: {} path: {} type: {})'.format(self.id, path + str(self.name), self.doc_type)
 		
 	def apply_patch(self, patch, revert=False):
 		self.head = self._apply_patch(self.head, patch, revert)
