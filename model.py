@@ -3,11 +3,11 @@ from sqlalchemy import Column, Integer, String, ForeignKey
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, relationship
 from sqlalchemy.orm.attributes import InstrumentedAttribute
+from diff_match_patch import diff_match_patch
 import difflib
 import re
 import os
 
-_no_eol = "\ No newline at end of file"
 _hdr_pat = re.compile("^@@ -(\d+),?(\d+)? \+(\d+),?(\d+)? @@$")
 
 db_name = 'docs.sql'
@@ -34,19 +34,24 @@ diff_select = "SELECT * FROM Diffs WHERE DocID=? ORDER BY Time DESC LIMIT 1"
 class NoParentDiff(Exception):
 	pass
 
+def _get_session():
+	engine = create_engine('sqlite:///{}'.format(db_name))
+	SqlSession = sessionmaker(bind=engine)
+	#Base = declarative_base()
+	return SqlSession()
 
 def get_documents():
-	session = SqlSession()
+	session = _get_session()
 	query = session.query(Document)
 	return [doc.dict() for doc in query]
 
 def get_document(doc_id):
-	session = SqlSession()
+	session = _get_session()
 	query = session.query(Document).filter(Document.id==doc_id)
 	return query[0]
 
 def save_document(document):
-	session = SqlSession()
+	session = _get_session()
 	cur_session = session.object_session(document)
 	if cur_session:
 		session = cur_session
@@ -56,7 +61,7 @@ def save_document(document):
 	return document
 
 def get_folder_from_path(path):
-	session = SqlSession()
+	session = _get_session()
 	query = session.query(Folder).filter(Folder.path==path)
 	if query.count():
 		return query[0]
@@ -64,7 +69,7 @@ def get_folder_from_path(path):
 		return None
 
 def get_folder(folder_id):
-	session = SqlSession()
+	session = _get_session()
 	query = session.query(Folder).filter(Folder.id==folder_id)
 	if query.count():
 		return query[0]
@@ -72,7 +77,7 @@ def get_folder(folder_id):
 		return None
 
 def get_folder_children(folder):
-	session = SqlSession()
+	session = _get_session()
 	#folder = session.query(Folder).filter(Folder.id==folder_id)[0]
 	folders = [f.dict() for f in session.query(Folder).\
 								filter(Folder.path.like('{}%'.format(folder.path))).\
@@ -81,7 +86,7 @@ def get_folder_children(folder):
 	return (folders,docs)
 
 def save_diff(diff, override = False):
-	session = SqlSession()
+	session = _get_session()
 
 	# The initial diff will not have a parent. It needs the ability to override this check.
 	if not override:
@@ -95,7 +100,7 @@ def save_diff(diff, override = False):
 	return diff
 
 def get_diff(diff_hash):
-	session = SqlSession()
+	session = _get_session()
 	query = session.query(Diff).filter(Diff.diff_hash==diff_hash)
 	results = [r for r in query]
 	if len(results):
@@ -104,7 +109,7 @@ def get_diff(diff_hash):
 		return None
 
 def get_head_diff(doc_id):
-	session = SqlSession()
+	session = _get_session()
 	query = session.query(Diff).filter(Diff.document==doc_id).order_by(desc(Diff.time))
 	return query[0].dict()
 
@@ -140,40 +145,43 @@ class Document(Base):
 		return 'Doc( id: {} path: {} type: {})'.format(self.id, path + str(self.name), self.doc_type)
 		
 	def apply_patch(self, patch, revert=False):
+		dmp = diff_match_patch()
+#		patches = dmp.patch_fromText(patch)
+#		self.head = dmp.patch_apply(patches, self.head)
 		self.head = self._apply_patch(self.head, patch, revert)
 	
-	def _apply_patch(self, s, patch, revert=False):
+	def _apply_patch(self, head, patch, revert=False):
 		"""
 		Apply patch to string s to recover newer string.
 		If revert is True, treat s as the newer string, recover older string.
 		Copied from: https://gist.github.com/noporpoise/16e731849eb1231e86d78f9dfeca3abc
 		"""
-		if not s:
-			s = ''
-		print((patch,s))
-		s = s.splitlines(True)
-		p = patch.splitlines(True)
-		t = ''
+		if not head or head == '' :
+			head = ' '
+		print((patch,head))
+		head_lines = head.splitlines(True)
+		patch_lines = patch.splitlines(True)
+		result = ''
 		i = sl = 0
 		(midx,sign) = (1,'+') if not revert else (3,'-')
-		while i < len(p) and p[i].startswith(("---","+++")): i += 1 # skip header lines
-		while i < len(p):
-			m = _hdr_pat.match(p[i])
-			if not m: raise Exception("Bad patch -- regex mismatch [line "+str(i)+"]")
-			l = int(m.group(midx))-1 + (m.group(midx+1) == '0')
-			if sl > l or l > len(s):
+		while i < len(patch_lines) and patch_lines[i].startswith(("---","+++")): i += 1 # skip header lines
+		while i < len(patch_lines):
+			header = _hdr_pat.match(patch_lines[i])
+			if not header: raise Exception("Bad patch -- regex mismatch [line "+str(i)+"]")
+			l = int(header.group(midx))-1 + (header.group(midx+1) == '0')
+			if sl > l or l > len(head_lines):
 				raise Exception("Bad patch -- bad line num [line "+str(i)+"]")
-			t += ''.join(s[sl:l])
+			result += ''.join(head_lines[sl:l])
 			sl = l
 			i += 1
-			while i < len(p) and p[i][0] != '@':
-				if i+1 < len(p) and p[i+1][0] == '\\': line = p[i][:-1]; i += 2
-				else: line = p[i]; i += 1
+			while i < len(patch_lines) and patch_lines[i][0] != '@':
+				if i+1 < len(patch_lines) and patch_lines[i+1][0] == '\\': line = patch_lines[i][:-1]; i += 2
+				else: line = patch_lines[i]; i += 1
 				if len(line) > 0:
-					if line[0] == sign or line[0] == ' ': t += line[1:]
+					if line[0] == sign or line[0] == ' ': result += line[1:]
 					sl += (line[0] != sign)
-		t += ''.join(s[sl:])
-		return t
+		result += ''.join(head_lines[sl:])
+		return result
 
 
 class Diff(Base):
@@ -194,7 +202,7 @@ class Diff(Base):
 Base.metadata.create_all(engine)
 
 if refresh:
-	session = SqlSession()
+	session = _get_session()
 	f = Folder()
 	f.path = '/'
 	session.add(f)
